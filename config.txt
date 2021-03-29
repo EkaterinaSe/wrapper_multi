@@ -1,0 +1,59 @@
+# Input file 
+# Read at start by computeMULTI.py
+# Sets up parallel jobs 
+
+# common working directory
+# where to compute, to save all output, etc
+# not the same as input directory or path to input files
+# USE absolute path
+common_wd = './'
+# 
+# file listing model atmospheres
+atmos_list = 'atmos.list'
+
+# format of the model atmospheres 
+atmos_format = 'marcs'
+#atmos_format = 'stagger_avg'
+#atmos_format = 'm1d'
+
+# path to model atmospheres 
+atmos_path = './'
+
+# path to model atom and input file
+atom_path = '/Users/Semenova/phd/nlte/ca'
+# atom ID
+atom_id = 'ca6'
+# a short comment describing model atom
+# this comment will be written in the header of NLTE binary grid
+atom_comment = 'small test Ca atom'
+
+# path to MULTI1D input files, other than model atmosphere or model atom (e.g. absmet, abslin)
+m1d_input = 'input'
+
+# path to Multi 1D executable
+m1d_exe = './mul23lus.x'
+
+# number of CPUs to use
+ncpu = 2
+
+
+
+# use abundance different from that in the model atom?
+# 0/1/2
+# 0 -- keep abundance from the model atom
+# 1 -- use new_abund
+# 2 -- use a range of abundances from start_abund to end_abund, with step_abund
+use_abund = 0
+
+# if use_abund == 1:
+new_abund = 7.5
+
+# if use_abund == 2:
+# starting abundance
+start_abund = 4
+end_abund = 6
+step_abund = 1
+
+write_ew =0
+write_profiles = 0
+write_ts = 0
