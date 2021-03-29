@@ -7,6 +7,8 @@ from atom_package import model_atom, write_atom
 from atmos_package import model_atmosphere, write_atmos_m1d, write_dscale_m1d
 from m1d_output import m1d, m1dline
 import multiprocessing
+import datetime
+
 
 
 def mkdir(s):
@@ -188,10 +190,10 @@ def run_multi( job, atom, atmos):
 
 
 def collect_output(setup, jobs):
-    from datetime import date
-    today = date.today().strftime("%b-%d-%Y")
+    today = datetime.date.today().strftime("%b-%d-%Y")
 
     """ Collect all EW grids into one """
+    datetime0 = datetime.datetime.now()
     print("Collecting grids of EWs")
     if setup.write_ew > 0:
         with open(setup.common_wd + '/output_EWgrid_%s.dat' %(today), 'w') as com_f:
@@ -205,7 +207,7 @@ def collect_output(setup, jobs):
     for line in data_all:
         if not line.startswith('#'):
             teff, logg, feh, abund = line.split()[0:4]
-            vmic = line.split()[-2]
+            vmic = line.split()[10]
             atmosID = line.split()[-1]
             wave = line.split()[6]
             if not [wave, teff, logg, vmic, feh, abund]  in params:
@@ -213,11 +215,14 @@ def collect_output(setup, jobs):
             else:
                 print("WARNING: found repeating entrance at \n %s AA Teff=%s, log(g)=%s, Vturb=%s, [Fe/H]=%s, A(X)=%s, atmos: %s " \
                         %(wave, teff, logg, vmic, feh, abund, atmosID) )
-
+    datetime1 = datetime.datetime.now()
+    print(datetime1-datetime0)
+    print(10*"-")
     """ #TODO sort the grids of EWs """
 
     """ Collect all TS formatted NLTE grids into one """
     print("Collecting TS formatted NLTE grids")
+    datetime0 = datetime.datetime.now()
     if setup.write_ts > 0:
         com_f = open(setup.common_wd + '/output_NLTEgrid4TS_%s.bin' %(today), 'wb')
         com_aux = open(setup.common_wd + '/auxData_NLTEgrid4TS_%s.dat' %(today), 'w')
@@ -250,6 +255,9 @@ def collect_output(setup, jobs):
 
         com_f.close()
         com_aux.close()
+        datetime1 = datetime.datetime.now()
+        print(datetime1-datetime0)
+        print(10*"-")
     return
 
 
@@ -259,8 +267,6 @@ def run_serial_job(args):
         job = args[1]
         print("job # %5.0f: %5.0f M1D runs" %( job.id, len(job.atmos) ) )
         job = setup_multi_job( setup, job )
-
-        print(job.output)
         for i in range(len(job.atmos)):
             # model atom is only read once
             atom = setup.atom

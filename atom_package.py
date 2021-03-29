@@ -41,7 +41,7 @@ def read_atom(self, file):
                 self.en.append( float( lsp[0] ) )
                 self.g.append( int( float(lsp[1]) ) )
                 self.label.append( li.split("'")[1].strip() )
-                self.ion.append( int( lsp[-1] ) )
+                self.ion.append( int( li.split("'")[-1].split()[0] ) )
                 c_noncom += 1
         else:
             c_all += 1
